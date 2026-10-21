@@ -1,0 +1,10 @@
+[
+  {
+    "id": 10,
+    "cliente": {
+      "nome": "Cliente de exemplo",
+      "empresa": "Empresa de exemplo"
+    },
+    "transcricao": "Vendedor: Qual é a principal necessidade da empresa?\nCliente: Precisamos integrar os processos e reduzir o trabalho manual.\nVendedor: Vamos agendar uma demonstração e preparar uma proposta."
+  }
+]
