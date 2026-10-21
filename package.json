@@ -1,0 +1,9 @@
+{
+  "name": "dealvision-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Frontend HTML, CSS e JavaScript do AdvisorMind Sprint 4",
+  "scripts": {"test": "node --test"},
+  "engines": {"node": ">=20"}
+}

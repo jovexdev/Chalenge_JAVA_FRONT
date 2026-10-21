@@ -1,84 +1,95 @@
-# DealVision — Front-end da Sprint 4
+# DealVision — Frontend integrado da Sprint 4
 
-Interface do TOTVS AdvisorMind com a identidade visual DealVision: tema escuro, azul elétrico, menu lateral e módulos SmartBriefing AI, Conversational Analytics e VoC Tracker, seguindo as referências fornecidas.
+Interface do AdvisorMind em **HTML, CSS e JavaScript puro**, conectada à [API Java](https://github.com/jovexdev/Sprint4_Java). Mantém a identidade DealVision com tema escuro, azul elétrico e módulos de inteligência comercial.
 
-## Esta etapa usa somente HTML e CSS
+## Executar no VS Code
 
-O projeto é uma **prévia navegável**, sem JavaScript, frameworks, instalação de dependências ou compilação. As telas já representam os fluxos do backend, mas os cadastros, listagens, estatísticas, resultados de IA e gráficos exibidos são **dados ilustrativos**. Eles não são carregados do Oracle.
+1. Clone este repositório ou execute **git pull** na cópia já aberta no VS Code:
 
-HTML e CSS não enviam os corpos JSON nem os métodos PUT/DELETE exigidos pela API. Portanto, salvar/editar/excluir cadastros, importar JSON e gerar análises reais ficarão para a próxima etapa, com autorização para acrescentar JavaScript. Os formulários desta versão validam os campos no navegador e abrem uma mensagem de prévia, sem alterar o banco ou chamar a OpenAI.
-
-A exportação de reuniões e a consulta de clientes na página Dados e arquivos já têm links diretos para os endpoints GET do backend local. Esses links dependem da API em execução e não preenchem a interface com dados reais.
-
-## Abrir no VS Code
-
-1. Clone o repositório:
-
-~~~bash
+~~~powershell
 git clone https://github.com/jovexdev/Chalenge_JAVA_FRONT.git
 ~~~
 
-2. No VS Code, use **File → Open Folder** e abra a pasta clonada.
-3. Instale a extensão **Live Server**, de Ritwick Dey, se ainda não estiver instalada. A recomendação já está na pasta .vscode.
+2. No IntelliJ, execute **AdvisorMindApplication** do backend com **Java 21**. A API deve responder em **http://localhost:8080/api/clientes**.
+3. Abra a pasta do frontend no VS Code. Instale a extensão **Live Server**, de Ritwick Dey, recomendada pelo projeto.
 4. Clique com o botão direito em **index.html → Open with Live Server**.
-5. Normalmente a página abrirá em **http://127.0.0.1:5500**. A porta 5500 já é permitida pelo CORS do backend.
+5. Use **http://127.0.0.1:5500** ou **http://localhost:5500**. A porta 5500 está configurada no projeto.
 
-Não crie um projeto Java dentro deste repositório e não copie a pasta src do backend para cá. O backend continua aberto no IntelliJ; o front-end é uma pasta separada no VS Code.
+Não é necessário instalar dependências ou compilar o frontend. Abra pelo servidor HTTP; clicar duas vezes no HTML e usar file:// não atende aos módulos JavaScript e ao CORS.
 
-Para receber futuras atualizações, execute **git pull** dentro da pasta do front-end. Não é necessário npm install ou npm run dev.
+## Preparar o backend
 
-## Navegação
+- A conexão Oracle continua em **ConexaoFactory**, conforme o exemplo do professor, com Class.forName e DriverManager.getConnection. O frontend usa a API.
+- As tabelas **T_TOTVS_CLIENTE**, **T_TOTVS_VENDEDOR** e **T_TOTVS_REUNIAO** precisam existir no mesmo usuário Oracle. No repositório Java, use o script de criação para uma base nova ou **database/02-migracao-sprint3-oracle.sql** para a Sprint 3. Leia o script antes de executar e preserve os dados existentes.
+- Para as análises, configure **OPENAI_API_KEY** nas variáveis de ambiente da execução Java do IntelliJ e reinicie o backend. O modelo continua configurado no Java por OPENAI_MODEL, com padrão gpt-4o-mini.
+- As origens **http://localhost:5500** e **http://127.0.0.1:5500** já são permitidas pelo CORS padrão do Java. Se mudar a porta, ajuste FRONTEND_ORIGINS na execução Java e reinicie a API.
 
-| Arquivo | Tela |
+Não coloque usuário/senha Oracle ou chave de IA no frontend. O endereço da API pode ser ajustado em **Dados e conexão**; o padrão é **http://localhost:8080/api**.
+
+## Funcionalidades
+
+| Tela | Integração |
 | --- | --- |
-| index.html | Dashboard e acesso aos módulos |
-| clientes.html | Lista de clientes, detalhes e formulários de cadastro/edição/exclusão |
-| vendedores.html | Equipe, histórico, ticket, senioridade e comissão estimada |
-| reunioes.html | Histórico, filtros CSS de temperatura, detalhes e edição/exclusão |
-| nova-reuniao.html | Contexto, cliente, vendedor e transcrição |
-| reuniao.html | Visão geral e transcrição demonstrativa da reunião |
-| smart-briefing.html | Resumo executivo, decisões, riscos e próximos passos |
-| analytics.html | Arco de sentimento, tempo de fala, contexto e momento crítico |
-| voc-tracker.html | Reclamações, oportunidades, melhorias e recomendações |
-| dados.html | Importação visual, arquivo de exemplo e links de exportação/consulta |
+| Dashboard | Estatísticas do Java, totais reais e pipeline por temperatura |
+| Clientes | Listar, buscar, detalhar, cadastrar, editar e excluir no banco |
+| Vendedores | CRUD completo, histórico, ticket, senioridade e comissão calculados pelo Java |
+| Reuniões | Lista, busca, filtros por cliente/vendedor/temperatura, edição, exclusão e exportação |
+| Nova reunião | Cliente obrigatório, vendedor opcional e transcrição até 100.000 caracteres |
+| Detalhes | Participantes, transcrição, duração estimada, temperatura e módulos |
+| SmartBriefing AI | Resumo executivo, temas, decisões, próximos passos e engajamento |
+| Conversational Analytics | Sentimento, participação, temas e momento crítico |
+| VoC Tracker | Reclamações, sugestões, elogios, oportunidades e recomendações |
+| Dados e conexão | Configurar/testar API, importar reuniões e exportar JSON |
 
-A análise detalhada usa o exemplo Banco Safra. Os demais registros são exemplos de carteira para demonstrar os cadastros e o filtro de temperatura.
+IDs são inteiros positivos informados manualmente, como exige a API. IDs existentes geram conflito. Clientes e vendedores com reuniões vinculadas não podem ser excluídos; a mensagem do Java aparece na janela.
 
-## O que funciona nesta versão
+O histórico de reuniões do vendedor é um campo do cadastro usado pelas regras originais. Não é incrementado automaticamente ao cadastrar uma transcrição. A duração é uma estimativa do backend, e a temperatura segue suas regras de palavras-chave.
 
-- Navegação entre as dez páginas.
-- Menu lateral e menu móvel, sem JavaScript.
-- Filtro de temperatura sobre as três reuniões demonstrativas, feito com radio e CSS.
-- Abertura/fechamento dos formulários e confirmações com :target.
-- Validação HTML nativa de campos obrigatórios, números mínimos/máximos, limites de texto e casas decimais.
-- Abertura da transcrição e orientações com details/summary.
-- Download do JSON de exemplo incluído no projeto.
-- Links diretos para exportar o JSON real ou consultar clientes na API local, quando o backend estiver disponível.
+## Utilizar as IAs
 
-As confirmações não simulam sucesso no banco: mostram uma mensagem explicando que o fluxo ainda está na etapa visual. O envio demonstrativo de formulários usa uma navegação GET local; os campos podem aparecer na URL, mas não são persistidos. As janelas CSS não implementam recursos de JavaScript como fechamento por Escape, foco automático ou bloqueio de foco dentro do diálogo.
+1. Cadastre um cliente, opcionalmente um vendedor e uma reunião com a transcrição.
+2. Abra a reunião e escolha um dos módulos.
+3. Confira a reunião no seletor e clique em **Gerar análise**.
+4. Consulte os cartões ou **Resultado completo da IA**. Use **Baixar análise** para salvar o texto.
 
-## Integração posterior com o backend
+Chamadas ocorrem somente ao clicar em Gerar análise/Gerar novamente e usam a conta configurada no Java. Reabrir uma tela não dispara análise. O resultado fica no sessionStorage, separado por API, reunião, módulo e transcrição. Editar a reunião invalida o resultado anterior. O backend atual não persiste análises no Oracle; fechar a sessão do navegador encerra esse cache.
 
-O contrato está documentado em **docs/INTEGRACAO.md**, com os 21 endpoints atuais, campos e códigos de resposta. Os formulários possuem atributos data-api e data-method apenas como referência declarativa; eles não executam chamadas HTTP para a API.
+A API retorna texto. O frontend organiza os títulos dos prompts do Java e conserva a resposta completa quando o formato varia. O gráfico de participação só aparece se a IA informar percentuais válidos de vendedor/cliente que somem 100%. São estimativas baseadas na transcrição. Não são inventadas séries de sentimento, contagens, datas ou métricas ausentes da API.
 
-O frontend não recebe usuário/senha Oracle ou chave OpenAI. A conexão do banco continua na **ConexaoFactory** do projeto Java, seguindo o professor; a chave de IA continua configurada no backend. As tabelas Oracle são criadas com os scripts do repositório Java.
+## Importar e exportar
 
-O backend atual devolve as três análises em texto no campo resultado. Percentuais de sentimento, séries de gráficos, frequência de temas, contagens de feedback e produtos em cartões ainda não existem como campos estruturados da API. Nesta entrega esses elementos são exemplos visuais, identificados nas telas. A integração deverá primeiro exibir o texto real; gráficos só devem usar métricas efetivamente fornecidas, sem inventar percentuais.
+A exportação baixa o JSON real do banco. Importe até 500 reuniões no formato legado do Java:
 
-## Arquivos e identidade visual
-
-~~~text
-assets/
-  styles.css          estilos, cores e responsividade
-  logo.svg            marca vetorial para a interface
-  icons.svg           ícones vetoriais
-  fonts/              Manrope local e licença OFL
-  exemplos/           arquivo JSON demonstrativo
-docs/
-  INTEGRACAO.md       relação entre telas e API
-  VALIDACAO.md        verificações da entrega
+~~~json
+[
+  {
+    "id": 10,
+    "cliente": {"nome": "Contato de exemplo", "empresa": "Empresa de exemplo"},
+    "transcricao": "Vendedor: Qual a necessidade?\nCliente: Precisamos integrar os processos."
+  }
+]
 ~~~
 
-A fonte **Manrope** está incluída localmente, com licença SIL Open Font License 1.1 em assets/fonts/OFL.txt. A interface não depende de CDNs para carregar fonte, ícones ou estilos. Fontes oficiais: [Google Fonts / Manrope](https://github.com/google/fonts/tree/main/ofl/manrope).
+Altere o ID do exemplo se ele já existir. O cliente pode ser localizado por nome/empresa ou criado na importação. Se informar ID de cliente existente, nome e empresa precisam corresponder. Para vincular um vendedor cadastrado, inclua **"vendedor": {"id": 1}**. A importação usa objetos aninhados, não clienteId/vendedorId do formulário. Uma falha desfaz todo o lote. Não há sobrescrita automática.
 
-O projeto usa HTML semântico, labels, foco visível, link para pular navegação, SVGs decorativos identificados, texto alternativo nos gráficos e layouts responsivos. As tabelas usam rolagem horizontal em telas pequenas; os gráficos e cards reorganizam o conteúdo conforme a largura disponível.
+## Organização e testes
+
+~~~text
+assets/js/api.js       transporte HTTP, configuração e erros
+assets/js/analysis.js  interpretação dos resultados e cache
+assets/js/app.js       páginas, formulários, filtros e operações
+assets/styles.css     identidade visual e responsividade
+assets/fonts/         Manrope local e licença OFL
+assets/exemplos/       JSON de exemplo
+docs/INTEGRACAO.md     contrato e decisões da interface
+docs/VALIDACAO.md      verificações executadas
+tests/                testes do contrato do frontend
+~~~
+
+Testes de desenvolvimento usam Node.js 20 ou superior, sem bibliotecas adicionais:
+
+~~~powershell
+npm test
+~~~
+
+Node não é necessário para usar o frontend pelo Live Server. A fonte Manrope inclui licença SIL OFL. Fonte, ícones e estilos são locais. A interface inclui navegação por teclado, diálogos nativos com Escape, mensagens de erro, estados vazios e carregamento.
